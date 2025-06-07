@@ -51,7 +51,10 @@ const tourSchema = new mongoose.Schema(
       default: Date.now(),
       select: false,
     },
-
+    secretTour: {
+      type: Boolean,
+      default: false,
+    },
     slug: String,
     discount: Number,
     images: [String],
@@ -67,7 +70,7 @@ tourSchema.virtual('durationWeeks').get(function () {
   return this.duration / 7;
 });
 
-// Document middleware runs before .save() and .create()
+// 1): DOCUMENT middleware: runs before .save() and .create()
 tourSchema.pre('save', function (next) {
   this.slug = slugify(this.name, { lower: true });
   next();
@@ -82,5 +85,18 @@ tourSchema.pre('save', function (next) {
 //   console.log(doc);
 //   next();
 // });
+
+// 2): QUERY middleware:
+//     /^find/ => match any query method that starts with find (find, findOne, findOneAndUpdate, etc.).
+tourSchema.pre(/^find/, function (next) {
+  this.find({ secretTour: { $ne: true } });
+  this.start = Date.now();
+  next();
+});
+
+tourSchema.post(/^find/, function (docs, next) {
+  console.log(`Query took ${Date.now() - this.start} milliseconds!`);
+  next();
+});
 
 module.exports = mongoose.model('Tour', tourSchema);
