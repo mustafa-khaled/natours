@@ -102,11 +102,30 @@ const restrictTo =
     next();
   };
 
+const forgetPassword = catchAsync(async (req, res, next) => {
+  // 1): Get user based on Posted email
+  const { email } = req.body;
+
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    return next(new AppError('There is no user with this email address.', 404));
+  }
+
+  // 2): Generate the random reset token
+  const resetToken = user.createPasswordResetToken();
+  await user.save({ validateBeforeSave: false });
+
+  // 3): Send it to user's email
+});
+
+const resetPassword = (req, res, next) => {};
+
 module.exports = {
   signup,
   login,
   protect,
   restrictTo,
+  forgetPassword,
+  resetPassword,
 };
-
-// authorization
