@@ -12,19 +12,18 @@ const signToken = (id) =>
   });
 
 const signup = catchAsync(async (req, res, next) => {
-  const { name, email, password, passwordConfirm, role } = req.body;
+  const { name, email, password, passwordConfirm } = req.body;
 
   const newUser = await User.create({
     name,
     email,
     password,
     passwordConfirm,
-    role,
   });
 
   const token = signToken(newUser._id);
 
-  res.status(200).json({
+  res.status(201).json({
     message: 'success',
     token,
     data: {
@@ -47,6 +46,7 @@ const login = catchAsync(async (req, res, next) => {
   if (!user || !(await user.correctPassword(password, user.password))) {
     return next(new AppError('Incorrect email or password!', 401));
   }
+
   // 3): if everything os ok, send token to client
   const token = signToken(user._id);
 
@@ -73,8 +73,8 @@ const protect = catchAsync(async (req, res, next) => {
   const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
 
   // 3): Check if user still exist
-  const freshUser = await User.findById(decoded.id);
-  if (!freshUser) {
+  const currentUser = await User.findById(decoded.id);
+  if (!currentUser) {
     return next(
       new AppError(
         'The user belonging to this token does no longer exist',
@@ -84,12 +84,12 @@ const protect = catchAsync(async (req, res, next) => {
   }
 
   // 4): Check if user changed password after the token was issued
-  if (freshUser.changedPasswordAfter(decoded.iat)) {
+  if (currentUser.changedPasswordAfter(decoded.iat)) {
     return next(new AppError('User recently changed his password', 401));
   }
 
   // GRANT ACCESS TO PROTECTED ROUTE
-  req.user = freshUser;
+  req.user = currentUser;
   next();
 });
 
