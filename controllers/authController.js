@@ -1,8 +1,8 @@
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const { promisify } = require('util');
-const User = require('../models/userModel');
 const { catchAsync } = require('../utils/catchAsync');
+const User = require('../models/userModel');
 const AppError = require('../utils/appError');
 const sendEmail = require('../utils/email');
 
@@ -142,7 +142,7 @@ const forgetPassword = catchAsync(async (req, res, next) => {
 
   res.status(200).json({
     status: 'success',
-    message: 'Token send to email',
+    message: 'Token sent to email',
   });
 });
 

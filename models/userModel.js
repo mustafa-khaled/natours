@@ -82,7 +82,7 @@ userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
     return JWTTimestamp < changedTimestamp;
   }
 
-  // Mens not changed
+  // Means NOT changed
   return false;
 };
 
