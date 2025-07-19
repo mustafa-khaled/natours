@@ -42,7 +42,7 @@ const updateMe = catchAsync(async (req, res, next) => {
   });
 
   res.status(200).json({
-    message: 'success',
+    status: 'success',
     data: {
       user: updatedUser,
     },
@@ -53,7 +53,7 @@ const deleteMe = catchAsync(async (req, res, next) => {
   await User.findByIdAndUpdate(req.user.id, { active: false });
 
   res.status(204).json({
-    message: 'success',
+    status: 'success',
     data: null,
   });
 });
