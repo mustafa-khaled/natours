@@ -143,6 +143,16 @@ tourSchema.pre(/^find/, function (next) {
   next();
 });
 
+// Get full data about guides instead of just the reference ID
+tourSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: 'guides',
+    select: '-__v -passwordChangedAt -role',
+  });
+
+  next();
+});
+
 // 3): AGGREGATION middleware:
 tourSchema.pre('aggregate', function (next) {
   this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
