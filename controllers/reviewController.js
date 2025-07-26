@@ -1,8 +1,9 @@
 const { catchAsync } = require('../utils/catchAsync');
 const Review = require('../models/reviewModel');
+const { deleteOne } = require('./handlerFactory');
 
 const getAllReviews = catchAsync(async (req, res, next) => {
-  let filter;
+  let filter = {};
   if (req.params.tourId) filter = { tour: req.params.tourId };
 
   const reviews = await Review.find(filter);
@@ -31,7 +32,10 @@ const createReview = catchAsync(async (req, res, next) => {
   });
 });
 
+const deleteReview = deleteOne(Review);
+
 module.exports = {
   getAllReviews,
   createReview,
+  deleteReview,
 };
