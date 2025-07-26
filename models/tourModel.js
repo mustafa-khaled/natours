@@ -103,7 +103,6 @@ const tourSchema = new mongoose.Schema(
         day: Number,
       },
     ],
-
     guides: [
       {
         type: mongoose.Schema.ObjectId,
@@ -119,6 +118,14 @@ const tourSchema = new mongoose.Schema(
 
 tourSchema.virtual('durationWeeks').get(function () {
   return this.duration / 7;
+});
+
+// Virtual populate
+//    => instead of adding 'reviews' filed and reference to them in DB we populate it virtually.
+tourSchema.virtual('reviews', {
+  ref: 'Review',
+  foreignField: 'tour',
+  localField: '_id',
 });
 
 // 1): DOCUMENT middleware: runs before .save() and .create()
