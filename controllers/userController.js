@@ -15,6 +15,11 @@ const filterObg = (obj, ...allowedFields) => {
   return newObject;
 };
 
+const getMe = (req, res, next) => {
+  req.params.id = req.user.id;
+  next();
+};
+
 const updateMe = catchAsync(async (req, res, next) => {
   // 1): Create error if user POST password data
   if (req.body.password || req.body.passwordConfirm) {
@@ -71,4 +76,5 @@ module.exports = {
   deleteUser,
   updateMe,
   deleteMe,
+  getMe,
 };
