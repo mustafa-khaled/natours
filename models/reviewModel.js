@@ -37,6 +37,9 @@ const reviewSchema = new mongoose.Schema(
   },
 );
 
+// Prevent more than one review from the same user on the same tour
+reviewSchema.index({ tour: 1, user: 1 }, { unique: true });
+
 reviewSchema.pre(/^find/, function (next) {
   this.populate({
     path: 'author',
@@ -58,16 +61,36 @@ reviewSchema.statics.calcAverageRatings = async function (tourId) {
     },
   ]);
 
-  await Tour.findByIdAndUpdate(tourId, {
-    ratingsQuantity: stats[0].nRatings,
-    ratingsAverage: stats[0].avgRating,
-  });
+  if (stats.length > 0) {
+    await Tour.findByIdAndUpdate(tourId, {
+      ratingsQuantity: stats[0].nRatings,
+      ratingsAverage: stats[0].avgRating,
+    });
+  } else {
+    await Tour.findByIdAndUpdate(tourId, {
+      ratingsQuantity: 0,
+      ratingsAverage: 4.5,
+    });
+  }
 };
 
 // post => Calling the function after the review created
 reviewSchema.post('save', function () {
   // 'this' => points to the current review
   this.constructor.calcAverageRatings(this.tour);
+});
+
+// findByIdAndUpdate
+// findByIdAndDelete
+// Go around to access the current document
+reviewSchema.pre(/^findOneAnd/, async function (next) {
+  this.r = await this.clone().findOne(); // Clone the query to prevent exec error
+  next();
+});
+
+reviewSchema.post(/^findOneAnd/, async function () {
+  if (!this.r) return; // review already deleted or not found
+  await this.r.constructor.calcAverageRatings(this.r.tour);
 });
 
 module.exports = mongoose.model('Review', reviewSchema);
