@@ -1,4 +1,7 @@
 extends base
 
 block content 
-    h1 This is the tour overview
+    main.main
+        .card-container
+            each tour in tours
+                include tourCardTemplate
