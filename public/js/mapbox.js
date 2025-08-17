@@ -12,32 +12,44 @@ document.addEventListener('DOMContentLoaded', function () {
     console.error('Error parsing locations:', err);
     return;
   }
+
   if (!Array.isArray(locations) || locations.length === 0) {
     container.innerHTML =
       '<p style="color:white;text-align:center;">No locations available</p>';
     return;
   }
 
-  container.innerHTML = `
-      <div class="locations-grid">
-        ${locations
-          .map(
-            (loc, index) => `
-          <div class="location-card">
-            <div class="location-day">${loc.day || index + 1}</div>
-            ${
-              loc.coordinates
-                ? `
-              <div class="location-coords">
-                ${loc.coordinates[1].toFixed(4)}, ${loc.coordinates[0].toFixed(4)}
-              </div>
-            `
-                : ''
-            }
-          </div>
-        `,
-          )
-          .join('')}
-      </div>
-    `;
+  // Clear container and create a map element
+  container.innerHTML =
+    '<div id="map" style="height:500px; width:100%;"></div>';
+
+  // Initialize Leaflet map
+  const map = L.map('map', { scrollWheelZoom: false });
+
+  // Add OpenStreetMap tile layer
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution:
+      '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+  }).addTo(map);
+
+  // Collect bounds for all locations
+  const bounds = [];
+
+  locations.forEach((loc, index) => {
+    if (loc.coordinates) {
+      const [lng, lat] = loc.coordinates;
+
+      const marker = L.marker([lat, lng]).addTo(map);
+      marker.bindPopup(
+        `<b>Day ${loc.day || index + 1}</b><br>${loc.description || ''}`,
+      );
+
+      bounds.push([lat, lng]);
+    }
+  });
+
+  // Fit the map to show all markers
+  if (bounds.length) {
+    map.fitBounds(bounds, { padding: [50, 50] });
+  }
 });
