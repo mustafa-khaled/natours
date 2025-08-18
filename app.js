@@ -6,6 +6,8 @@ const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const hpp = require('hpp');
 const path = require('path');
+const cors = require('cors');
+const cookieParser = require('cookie-parser');
 
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
@@ -22,6 +24,7 @@ app.set('views', path.join(__dirname, 'views'));
 // 1): {{ GLOBAL middlewares }}
 // Serving static files
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(cors({ origin: ['http://localhost:3000', 'http://127.0.0.1:3000'] }));
 
 // Set Security HTTP headers
 // app.use(helmet());
@@ -37,12 +40,13 @@ app.use(
         ],
         styleSrc: [
           "'self'",
-          "'unsafe-inline'", // 👈 allow inline styles
+          "'unsafe-inline'",
           'https://unpkg.com',
           'https://fonts.googleapis.com',
         ],
         fontSrc: ["'self'", 'https://fonts.gstatic.com'],
         imgSrc: ["'self'", 'data:', 'https://*'],
+        connectSrc: ["'self'", 'http://127.0.0.1:3000'],
       },
     },
   }),
@@ -68,6 +72,8 @@ app.use(
   }),
 );
 
+app.use(cookieParser());
+
 // Data sanitization against noSQL query injection
 app.use(mongoSanitize());
 
@@ -87,6 +93,11 @@ app.use(
     ],
   }),
 );
+
+app.use((req, res, next) => {
+  console.log(req.cookies);
+  next();
+});
 
 // 2): {{ ROUTES }}
 app.use('/', viewRoutes);
