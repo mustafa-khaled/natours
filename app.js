@@ -24,7 +24,12 @@ app.set('views', path.join(__dirname, 'views'));
 // 1): {{ GLOBAL middlewares }}
 // Serving static files
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(cors({ origin: ['http://localhost:3000', 'http://127.0.0.1:3000'] }));
+app.use(
+  cors({
+    origin: 'http://localhost:3000',
+    credentials: true,
+  }),
+);
 
 // Set Security HTTP headers
 // app.use(helmet());

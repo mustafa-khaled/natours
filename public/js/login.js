@@ -1,17 +1,29 @@
 /* eslint-disable */
 
-const BASE_URL = 'http://127.0.0.1:3000/api';
+const BASE_URL = 'http://localhost:3000/api';
 
 const login = async (email, password) => {
   try {
-    const res = await axios.post(`${BASE_URL}/v1/users/login`, {
-      email,
-      password,
-    });
+    const res = await axios.post(
+      `${BASE_URL}/v1/users/login`,
+      {
+        email,
+        password,
+      },
+      {
+        withCredentials: true,
+      },
+    );
 
-    console.log(res);
+    if (res.data.status === 'success') {
+      alert('Logged in successfully');
+      window.setTimeout(() => {
+        location.assign('/');
+      }, 1500);
+    }
   } catch (err) {
-    throw new Error(err.response.data.message);
+    alert(err.response.data.message);
+    // throw new Error(err.response.data.message);
   }
 };
 
