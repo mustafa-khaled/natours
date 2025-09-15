@@ -33,26 +33,16 @@ app.use(
 
 // Set Security HTTP headers
 // app.use(helmet());
+
 app.use(
-  helmet({
-    contentSecurityPolicy: {
-      directives: {
-        defaultSrc: ["'self'"],
-        scriptSrc: [
-          "'self'",
-          'https://unpkg.com',
-          'https://cdnjs.cloudflare.com',
-        ],
-        styleSrc: [
-          "'self'",
-          "'unsafe-inline'",
-          'https://unpkg.com',
-          'https://fonts.googleapis.com',
-        ],
-        fontSrc: ["'self'", 'https://fonts.gstatic.com'],
-        imgSrc: ["'self'", 'data:', 'https://*'],
-        connectSrc: ["'self'", 'http://127.0.0.1:3000'],
-      },
+  helmet.contentSecurityPolicy({
+    directives: {
+      defaultSrc: ["'self'"],
+      connectSrc: ["'self'", 'ws://localhost:*'],
+      scriptSrc: ["'self'", "'unsafe-inline'"],
+      styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
+      fontSrc: ['https://fonts.gstatic.com'],
+      imgSrc: ["'self'", 'data:'],
     },
   }),
 );

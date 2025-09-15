@@ -7,9 +7,7 @@ html
             link(rel='stylesheet' href='/css/style.css')
             link(rel='shortcut icon' type='image/png' href='/img/favicon.png')
             link(rel='stylesheet' href='https://fonts.googleapis.com/css?family=Lato:300,300i,700')
-            link(rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="")
-            script(src='https://unpkg.com/leaflet@1.9.4/dist/leaflet.js' integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin="")
-            script(src='https://cdnjs.cloudflare.com/ajax/libs/axios/1.11.0/axios.min.js')
+            meta(http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' ws://localhost:*; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:;")
             title Natours | #{title}
 
     body 
@@ -21,6 +19,5 @@ html
 
         // Footer
         include _footer
-        script(src='/js/mapbox.js')
-        script(src='/js/login.js')
+        script(src='/js/bundle.js')
 
