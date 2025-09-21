@@ -1,12 +1,15 @@
 /* eslint-disable */
 
 import '@babel/polyfill';
-import { login } from './login';
+import { login, logout } from './login';
 import { displayMap } from './load-map';
 
-const formElement = document.querySelector('.form');
-if (formElement) {
-  formElement.addEventListener('submit', (e) => {
+// DOM elements
+const loginForm = document.querySelector('.form');
+const logoutBtn = document.querySelector('.nav__el--logout');
+
+if (loginForm) {
+  loginForm.addEventListener('submit', (e) => {
     e.preventDefault();
 
     const emailInput = document.getElementById('email').value;
@@ -30,3 +33,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   displayMap(locations);
 });
+
+if (logoutBtn) {
+  logoutBtn.addEventListener('click', logout);
+}
