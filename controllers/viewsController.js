@@ -43,8 +43,15 @@ const getLoginForm = catchAsync(async (req, res, next) => {
   });
 });
 
+const getAccount = catchAsync(async (req, res, next) => {
+  res.status(200).render('account', {
+    title: 'Your account',
+  });
+});
+
 module.exports = {
   getOverview,
   getTour,
   getLoginForm,
+  getAccount,
 };
