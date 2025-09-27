@@ -34,7 +34,7 @@ export const logout = async () => {
     const res = await axios.get(`${BASE_URL}/v1/users/logout`);
 
     if (res.data.status === 'success') {
-      location.assign('/');
+      window.location.href = '/';
       location.reload(true);
     }
   } catch (err) {

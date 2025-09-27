@@ -5,13 +5,14 @@ import { showAlert } from './alerts';
 
 const BASE_URL = 'http://localhost:3000/api';
 
-export const updateUserData = async (name, email) => {
+export const updateUserSettings = async (data, type) => {
   try {
+    const url = type === 'password' ? 'updateMyPassword' : 'updateMe';
+
     const res = await axios.patch(
-      `${BASE_URL}/v1/users/updateMe`,
+      `${BASE_URL}/v1/users/${url}`,
       {
-        name,
-        email,
+        ...data,
       },
       {
         withCredentials: true,
@@ -19,7 +20,7 @@ export const updateUserData = async (name, email) => {
     );
 
     if (res.data.status === 'success') {
-      showAlert('success', `Profile updated successfully`);
+      showAlert('success', `${type.toUpperCase()}: updated successfully`);
     }
   } catch (err) {
     showAlert('error', err.response.data.message);
