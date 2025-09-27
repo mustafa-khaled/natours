@@ -1,4 +1,5 @@
 const express = require('express');
+
 const {
   getAllUsers,
   createUser,
@@ -8,8 +9,9 @@ const {
   updateMe,
   deleteMe,
   getMe,
+  uploadUserPhoto,
+  resizeUserPhoto,
 } = require('../controllers/userController');
-// Auth controller
 const {
   signup,
   login,
@@ -34,7 +36,7 @@ router.use(protect);
 
 router.patch('/updateMyPassword', updatePassword);
 router.get('/me', getMe, getUser);
-router.patch('/updateMe', updateMe);
+router.patch('/updateMe', uploadUserPhoto, resizeUserPhoto, updateMe);
 router.delete('/deleteMe', deleteMe);
 
 // Add restrict to (admins only) middleware to the next routes
