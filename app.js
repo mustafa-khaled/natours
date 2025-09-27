@@ -32,8 +32,6 @@ app.use(
 );
 
 // Set Security HTTP headers
-// app.use(helmet());
-
 app.use(
   helmet.contentSecurityPolicy({
     directives: {
@@ -69,6 +67,8 @@ app.use(
 
 app.use(cookieParser());
 
+app.use(express.urlencoded({ extended: true, limit: '10kb' }));
+
 // Data sanitization against noSQL query injection
 app.use(mongoSanitize());
 
@@ -90,7 +90,7 @@ app.use(
 );
 
 app.use((req, res, next) => {
-  console.log(req.cookies);
+  // console.log(req.cookies);
   next();
 });
 
