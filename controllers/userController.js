@@ -19,7 +19,8 @@ const upload = multer({
 });
 
 const uploadUserPhoto = upload.single('photo');
-// Image processing 
+
+// Image processing
 const resizeUserPhoto = (req, res, next) => {
   if (!req.file) return next();
 
