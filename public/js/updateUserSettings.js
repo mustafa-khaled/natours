@@ -9,18 +9,15 @@ export const updateUserSettings = async (data, type) => {
   try {
     const url = type === 'password' ? 'updateMyPassword' : 'updateMe';
 
-    const res = await axios.patch(
-      `${BASE_URL}/v1/users/${url}`,
-      {
-        ...data,
-      },
-      {
-        withCredentials: true,
-      },
-    );
+    const res = await axios.patch(`${BASE_URL}/v1/users/${url}`, data, {
+      withCredentials: true,
+    });
 
     if (res.data.status === 'success') {
       showAlert('success', `${type.toUpperCase()}: updated successfully`);
+      window.setTimeout(() => {
+        location.reload();
+      }, 1500);
     }
   } catch (err) {
     showAlert('error', err.response.data.message);
