@@ -4,7 +4,7 @@ const { promisify } = require('util');
 const { catchAsync } = require('../utils/catchAsync');
 const User = require('../models/userModel');
 const AppError = require('../utils/appError');
-const sendEmail = require('../utils/email');
+const Email = require('../utils/email');
 
 const signToken = (id) =>
   jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -46,6 +46,9 @@ const signup = catchAsync(async (req, res, next) => {
     password,
     passwordConfirm,
   });
+
+  const url = `${req.protocol}://${req.get('host')}/me`;
+  await new Email(newUser, url).sendWelcome();
 
   createSendToken(newUser, 201, res);
 });
@@ -179,12 +182,13 @@ const forgetPassword = catchAsync(async (req, res, next) => {
   const resetURL = `${req.protocol}://${req.get('host')}/api/v1/users/resetPassword/${resetToken}`;
   const message = `Forgot tour password? Submit a PATCH request with your new password amd passwordConfirm to: ${resetURL}.\nIf you didn't forget your password, please ignore this.`;
 
+  console.log(message);
   try {
-    await sendEmail({
-      email: user.email,
-      subject: 'Your password reset token (valid for 10 min)',
-      message,
-    });
+    // await Email({
+    //   email: user.email,
+    //   subject: 'Your password reset token (valid for 10 min)',
+    //   message,
+    // });
   } catch (err) {
     user.passwordResetToken = undefined;
     user.passwordResetExpires = undefined;
